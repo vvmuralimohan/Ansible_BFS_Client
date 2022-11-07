@@ -1,0 +1,29 @@
+---
+# Installing the package
+- name: Checking the package is installed or not
+  win_shell: Get-ChildItem HKLM\SOFTWARE\$_\Microsoft\Windows\CurrentVersion\Uninstall\|? {($_.GetValue("DisplayName")) -like "(*BigFix Client*}}
+  register: bes_client
+
+- name: display the agent
+  ansible.builtin.debug: var=bes_client
+
+- name: checking if the agent is installed or not
+  ansble.builtin.debug:
+    msg: splunk agent is not installed
+  when: bes_client.stdout | lenght == 0
+
+- name: checking if the agent is installed
+  ansble.builtin.debug:
+    msg: splunk agent is installed
+  when: bes_client.stdout | lenght != 0
+
+- name: gathering the CVS information
+  win_shell: Get-Wmiobject -Namespace root\ccm-Class SMS_Authority
+  register: sccminfo
+
+- name: display the CVS
+  ansble.builtin.debug: sccminfo.name
+  register: CVS
+
+- name: check the CVS is exists or not
+  ansble.builtin.debug: sccminfo.name=CVS
