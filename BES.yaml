@@ -1,0 +1,25 @@
+---
+# check if os architechture and bit system is not 32
+- name: get pshome
+  win_shell: $pshome
+  register: pshome_output
+
+- name: display pshome
+  ansble.builtin.debug: var=pshome_output
+
+- name: checking the windos os bit
+  win_shell: (Get-wmobject win32_OparatingSystem).OSArchitecture
+  register: win_version
+
+- name: Display windows version bit
+  ansible.builtin.debug: var=win_version
+
+- name: check 64 bit OSArchitecture and 64 bit system
+  ansible.builtin.set_fact:
+    output: "Condition true and go ahead with the condition"
+    when:
+      - "'System32' in pshom_output.stdot_lines[0]"
+      - winosbit_version.stdot_lines[0] == "64-bit"
+
+- name: Display 64 bit OSArchitecture and 64 bit system
+  ansible.builtin.debug: var=output
